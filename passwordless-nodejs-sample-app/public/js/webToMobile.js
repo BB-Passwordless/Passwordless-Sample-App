@@ -1,8 +1,8 @@
-const fido = new fido2auth("BASE-URL", "CLIENT_ID");
+const fido = new passwordless("BASE_URL", "CLIENT_ID");
 
-const approveRegister = (username, sessionId) => {
+const approveRegister = (username, id) => {
   fido
-    .register(username)
+    .register({ username, id })
     .then(async (response) => {
       console.log(response);
       if (response.verified) {
@@ -15,9 +15,9 @@ const approveRegister = (username, sessionId) => {
     });
 };
 
-const approveLogin = (username, sessionId) => {
+const approveLogin = (username, id) => {
   fido
-    .login(username)
+    .login({ username, id })
     .then(async (response) => {
       console.log("loginResponse", response);
       if (response.verified) {
@@ -34,10 +34,9 @@ const declineProcess = (process) => {
   window.close();
 };
 
-const approveDevice = (username, sessionId) => {
-  socket.emit("join", { id: sessionId });
+const approveDevice = (username, id) => {
   fido
-    .addDevice(username)
+    .addDevice({ username, id })
     .then(async (response) => {
       console.log(response);
       if (response.verified) {

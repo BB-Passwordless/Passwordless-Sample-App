@@ -1,6 +1,7 @@
 const fido = new passwordless(
-  "https://home.passwordless.com.au",
-  "0y2tDygzACG1xAKZGfhf9IibWd1EoZvH7KSW22CFp8DCZXJ88D",);
+  "BASE_URL",
+  "CLIENT_ID",
+);
 
 
 
@@ -29,7 +30,7 @@ const registerFun = async () => {
   //console.log(username);
   if (this.authMethod.value == 1) {
     fido
-      .register(username)
+      .register({username})
       .then(async (response) => {
         if (response.verified) {
           await AddToAudit(response.userId, 1, "success");
@@ -58,7 +59,7 @@ const loginFun = async () => {
 
   if (this.authMethod.value == 1) {
     fido
-      .login(username)
+      .login({username})
       .then(async (response) => {
         if (response.verified) {
           await AddToAudit(response.userId, 2, "success");

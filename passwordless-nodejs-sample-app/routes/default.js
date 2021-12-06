@@ -32,14 +32,14 @@ router.get("/registerToken/:accessToken", async (req, res) => {
   const { accessToken } = req.params;
   console.log(accessToken);
   try {
-    const data = await Axios.post(
+    const response = await Axios.post(
       "https://home.passwordless.com.au/api/verifyToken",
       {
         accessToken,
       }
     );
-    console.log(data.data);
-    res.render("registerDetails", data);
+    console.log(response.data);
+    res.render("registerDetails", {data:response.data});
   } catch (err) {
     // err.name == TokenExpiredError
 
@@ -52,16 +52,16 @@ router.get("/loginToken/:accessToken", async (req, res) => {
   const { accessToken } = req.params;
 
   try {
-    const data = await Axios.post(
+    const response = await Axios.post(
       "https://home.passwordless.com.au/api/verifyToken",
       {
         accessToken,
       }
     );
 
-    console.log(data);
+    console.log(response.data);
 
-    res.render("details", data);
+    res.render("details", {data:response.data});
   } catch (err) {
     res.render("error");
   }
