@@ -1,12 +1,15 @@
 # Passwordless Nodejs Sample App
 
-This is Sample app for Passwordless authentication.
+This is Sample app for Passwordless authentication, which is used to demonstrate how to use passwordless authentication. 
 
 
 - Create free account on https://home.passwordless.com.au
+
 - Create a web app
+
 - You will get client_id and baseURL
-- Use ClientId and baseURL to do passwordless authentication.
+
+- Use CLIENT_ID and BASE_URL to do passwordless authentication.
 
 ## Installation
 
@@ -27,7 +30,9 @@ This is Sample app for Passwordless authentication.
   yarn install
 ```
 
-3. Run project by following command
+3. Replace CLIENT_ID and BASE_URL with your own from /public/js/script.js and /public/js/webToMobile.js
+
+4. Run project by following command
 
 ```bash
  npm start
@@ -36,12 +41,31 @@ This is Sample app for Passwordless authentication.
 
  yarn start
 ```
-4. Project will start running on
+
+
+5. Project will start running on
 
 ```bash
 http://localhost:8080
 ```
 
+
+## Running localhost on Remote devices (for development only)
+
+1. go to https://ngrok.com and login or create account 
+
+2. Download ngrok based on your OS 
+
+3. unzip ngrok and follow ngrok documentation
+
+4. Run ngrok with command 
+
+```bash
+  ./ngrok http 8080
+```
+5. You will get a https url, copy it
+
+6. Open Passwordless Dasboard and Edit your app website url, and you are done. Now you can use appless and inApp feature to login from remote devices in development.
 
 ## Authors
 
