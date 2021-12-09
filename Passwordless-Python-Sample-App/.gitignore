@@ -1,0 +1,9 @@
+.idea/
+/env
+*.pyc
+logs/
+*.db
+*.pid
+__pycache__/
+*.bak
+audio_files
