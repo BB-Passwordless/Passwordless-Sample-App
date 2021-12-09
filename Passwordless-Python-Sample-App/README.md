@@ -17,7 +17,7 @@ This is Sample app for Passwordless authentication, which is used to demonstrate
 
 ```bash
   git clone https://github.com/BB-Passwordless/Passwordless-Sample-App.git
-  cd passwordless-python-sample-app
+  cd Passwordless-Python-Sample-App
 ```
     
 2. Install packages with npm or yarn
