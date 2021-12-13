@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/passwordless-bb@1.0.2/index.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+   
+    <!-- Style -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <title th:text="${data.type}"></title>
+  </head>
+  <body>
+  
+
+  <div class="content">
+    
+    <div class="container">
+      <div class="row align-items-stretch justify-content-center no-gutters">
+        <div class="col-md-7 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+            <div class="row d-flex justify-content-center">
+                <img src="https://www.blue-bricks.com/wp-content/uploads/2021/06/logo_transparent-1.png" style="width: 18rem;">
+            </div>
+          <div class="form h-100 contact-wrap pt-5">
+            <h3 class="text-center" >Passwordless
+              <span th:text="${data.type}"></span>
+            </h3>
+            <form class="mb-2 mt-5" method="post" id="contactForm" name="contactForm">
+              <div class="row">
+                <div class="col-md-12 form-group mb-3">
+                  <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+                </div>
+              </div>
+              <div class="form-group">
+                <select class="form-select dropdownOption" id="authMethod" name="authMethod" aria-label="Default select example">
+                  <option selected>Select Options For <span th:text="${data.type}"></span></option>
+                  <option value="1">Same Platform</option>
+                  <option value="2">Appless QR</option>
+                  <option value="3">InApp QR</option>
+                  <option th:if="${data.type == 'Login'}" value="4">Push Notification</option>
+                </select>
+              </div>
+              </form>
+              
+              <div class="row justify-content-center mt-3">
+                <div class="col-md-5 form-group text-center">
+                    <a  th:if="${data.type == 'Login'}" class="btn btn-block btn-primary rounded-0 py-2 px-4" onclick="loginFun()" style="color: #fff;">Login</a>
+                  <a  th:if="${data.type == 'Register'}" class="btn btn-block btn-primary rounded-0 py-2 px-4" onclick="registerFun()" style="color: #fff;">Register</a>
+                </div>
+              </div>
+             
+
+              <div class="row justify-content-center mt-3">
+                  <p th:if="${data.type == 'Login'}">Not registered yet? <a href="/register" class="blue-color"><b>Register Here</b></a></p>
+                <p th:if="${data.type == 'Register'}">Already registered? <a href="/" class="blue-color"><b>Login Here</b></a></p>
+              </div>
+
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal" id="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+          <button type="button" class="close p-3 text-right" data-dismiss="modal">&times;</button>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="row d-flex justify-content-center">
+            <img src="https://www.blue-bricks.com/wp-content/uploads/2021/06/logo_transparent-1.png" style="width: 18rem;">
+        </div>
+        <h3 class="text-center mt-4">Verify It's You</h3>
+        <p class="text-center">Scan the code below using your phones camera</p>
+        <div class="row d-flex justify-content-center">
+          <img src="" id="qrImg" style="width: 18rem;">
+      </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+    
+  </div>
+
+    <script src="/js/jquery-3.3.1.min.js"></script>
+  
+    <script src="/js/bootstrap.min.js"></script>
+   
+<script defer src="/js/script.js"></script>
+<script src="/js/Detect.js"></script>
+  </body>
+</html>
