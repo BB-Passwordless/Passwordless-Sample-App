@@ -1,36 +1,47 @@
-const fido = new passwordless(
-  "BASE_URL",
-  "CLIENT_ID",
-);
+const fido = new passwordless("BASE_URL", "CLIENT_ID");
 
+const getAppDetails = async () => {
+  const logoImage = document.getElementById("logo");
+  console.log(logoImage);
+  try {
+    const response = await fido.getApplicationNameAndLogo();
+    console.log(response);
 
+    if (response.logo) {
+      console.log(logoImage);
+      logoImage.src = response.logo;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+getAppDetails();
 
 function randomString(length, chars) {
-  var result = '';
-  for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+  var result = "";
+  for (var i = length; i > 0; --i)
+    result += chars[Math.floor(Math.random() * chars.length)];
   return result;
 }
 
-const generateRandomId = () =>{
-  const rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+const generateRandomId = () => {
+  const rString = randomString(
+    32,
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  );
   return rString;
-
-}
-
-
-
+};
 
 const registerFun = async () => {
   //console.log("regn session id",sessionId);
   const qrImg = document.getElementById("qrImg");
   qrImg.src = "#";
 
-  
   const username = this.username.value;
   //console.log(username);
   if (this.authMethod.value == 1) {
     fido
-      .register({username})
+      .register({ username })
       .then(async (response) => {
         if (response.verified) {
           await AddToAudit(response.userId, 1, "success");
@@ -43,11 +54,9 @@ const registerFun = async () => {
       });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 1, "web");
-  
   } else if (this.authMethod.value == 3) {
     generateQR(username, 1, "app");
     $("#RegisterModal").modal("show");
-   
   }
 };
 
@@ -59,7 +68,7 @@ const loginFun = async () => {
 
   if (this.authMethod.value == 1) {
     fido
-      .login({username})
+      .login({ username })
       .then(async (response) => {
         if (response.verified) {
           await AddToAudit(response.userId, 2, "success");
@@ -71,11 +80,9 @@ const loginFun = async () => {
       });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 2, "web");
-   
   } else if (this.authMethod.value == 3) {
     generateQR(username, 2, "app");
     $("#loginModal").modal("show");
-  
   }
 };
 
@@ -118,26 +125,24 @@ const generateQR = async (username, type, platform = "web") => {
         //console.log(response);
         qrImg.src = response.url;
 
-        console.log({accessToken:response.accessToken});
+        console.log({ accessToken: response.accessToken });
 
         if (type === 2) $("#loginModal").modal("show");
         else $("#RegisterModal").modal("show");
 
-
         console.log(userDetails);
 
-        const transactionResponse = await fido.getTransactionStatusOnChange(userDetails.id)
-        if(transactionResponse.status == "SUCCESS"){
+        const transactionResponse = await fido.getTransactionStatusOnChange(
+          userDetails.id
+        );
+        if (transactionResponse.status == "SUCCESS") {
           console.log("transaction success");
-          if(type == 1) window.location.href = "/registerSuccess";
-          else if(type == 2) window.location.href = "/success";
-          else if(type == 3) window.location.href = "/addDeviceSuccess";
-        }
-        else {
+          if (type == 1) window.location.href = "/registerSuccess";
+          else if (type == 2) window.location.href = "/success";
+          else if (type == 3) window.location.href = "/addDeviceSuccess";
+        } else {
           console.log("Something went wrong");
         }
-
-        
       })
       .catch((error) => alert(error));
   };
@@ -177,11 +182,9 @@ const addDevice = async (sessionId) => {
       });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 3, "web", sessionId);
-  
   } else if (this.authMethod.value == 3) {
     generateQR(username, 3, "app", sessionId);
     $("#RegisterModal").modal("show");
-   
   } else alert("not done yet");
 };
 
@@ -194,4 +197,54 @@ const AddToAudit = async (userId, type, label) => {
   (data.browser = ua.browser.name), (data.device = ua.os.name);
   data.label = label;
   fido.Audit({ userId, data, type });
+};
+
+const approveRegister = (username, id) => {
+  fido
+    .register({ username, id })
+    .then(async (response) => {
+      console.log(response);
+      if (response.verified) {
+        await AddToAudit(response.userId, 1, "success");
+        window.location.href = "/registerSuccess";
+      } else await AddToAudit(response.userId, 1, "error");
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
+};
+
+const approveLogin = (username, id) => {
+  fido
+    .login({ username, id })
+    .then(async (response) => {
+      console.log("loginResponse", response);
+      if (response.verified) {
+        await AddToAudit(response.userId, 2, "success");
+        window.location.href = "/success";
+      } else await AddToAudit(response.userId, 2, "error");
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
+};
+
+const declineProcess = (process) => {
+  window.close();
+};
+
+const approveDevice = (username, id) => {
+  fido
+    .addDevice({ username, id })
+    .then(async (response) => {
+      console.log(response);
+      if (response.verified) {
+        await AddToAudit(response.userId, 3, "success");
+        alert("device added successfully");
+        window.close();
+      } else await AddToAudit(response.userId, 3, "error");
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
 };

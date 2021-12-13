@@ -3,6 +3,24 @@ const fido = new passwordless(
   "CLIENT_ID"
 );
 
+
+const getAppDetails = async () => {
+  const logoImage = document.getElementById("logo");
+  console.log(logoImage);
+  try {
+    const response = await fido.getApplicationNameAndLogo();
+    console.log(response);
+
+    if (response.logo) {
+      console.log(logoImage);
+      logoImage.src = response.logo;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+getAppDetails();
+
 function randomString(length, chars) {
   var result = "";
   for (var i = length; i > 0; --i)
