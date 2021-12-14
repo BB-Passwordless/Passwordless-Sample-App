@@ -1,25 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-function Home() {
-  return <h2>Home</h2>;
-}
-
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
-}
+import Details from "./Screens/Details";
+import Success from "./Screens/Success";
+import Home from "./Screens/Login";
+import { Passwordless } from "passwordless-bb";
+Passwordless.init(process.env.REACT_APP_BASE_URL, process.env.REACT_APP_CLIENT_ID);
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/about" element={About} />
-         
-      <Route path="/" element={Home} />
-        <Route path="/users" element={ Users} />
-       
+        <Route path="/success" element={<Success />} />
+
+        <Route path="/" element={<Home type="Login" />} />
+        <Route path="/register" element={<Home type="Register" />} />
+        <Route path="/authToken/:accessToken" element={<Details />} />
       </Routes>
     </Router>
   );
