@@ -9,7 +9,11 @@
     <script src="/js/jquery-3.3.1.min.js"></script>
    <!-- <script src="https://cdn.jsdelivr.net/npm/authnfidotest@2.0.3/index.min.js"></script> -->
     <!-- <script src="/js/fido2.js"></script> -->
+<<<<<<< HEAD
      <script src="https://cdn.jsdelivr.net/npm/passwordless-bb@2.0.2/index.js"></script>
+=======
+     <script src="https://cdn.jsdelivr.net/npm/passwordless-bb@2.0.1/index.js"></script>
+>>>>>>> 7aebd482729324d76ccaba6043572e026bdc8289
     <script>
 
 const latitude = "<%= data.latitude %>"
@@ -52,7 +56,7 @@ const longitude = "<%= data.longitude %>"
             <div class="card">
                 <div class="card-body">
             <div class="row d-flex justify-content-center">
-                <img src="https://www.blue-bricks.com/wp-content/uploads/2021/06/logo_transparent-1.png" id="logo" style="width: 18rem;">
+                <img src="https://www.blue-bricks.com/wp-content/uploads/2021/06/logo_transparent-1.png" id="logo" style="width: 18rem; height: 8rem;">
             </div>
           <div class="form h-100 contact-wrap pt-4">
             <h3 class="text-center">Passwordless Register</h3>
@@ -81,7 +85,7 @@ const longitude = "<%= data.longitude %>"
           <hr class="my-1">
               <div class="row justify-content-center mt-4">
                 <div class="col-6 form-group text-center">
-                    <a class="btn btn-block btn-outline-primary rounded-0 py-2 px-4" onclick="declineProcess('Resistration')">Decline</a>
+                    <a class="btn btn-block btn-outline-primary rounded-0 py-2 px-4" onclick="declineProcess('<%= data.id %>')">Decline</a>
                 </div>
                 <div class="col-6 form-group text-center">
                     <a class="btn btn-block btn-primary rounded-0 py-2 px-4" onclick="approveRegister('<%= data.username %>','<%= data.id %>')" style="color: #fff;">Approve</a>
