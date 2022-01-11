@@ -32,11 +32,8 @@ router.get("/registerToken/:accessToken", async (req, res) => {
   const { accessToken } = req.params;
   console.log(accessToken);
   try {
-    const response = await Axios.post(
-      "https://home.passwordless.com.au/api/verifyToken",
-      {
-        accessToken,
-      }
+    const response = await Axios.get(
+      "https://api.passwordless.com.au/v1/verifyToken/" + accessToken
     );
     console.log(response.data);
     res.render("registerDetails", {data:response.data});
@@ -52,11 +49,8 @@ router.get("/loginToken/:accessToken", async (req, res) => {
   const { accessToken } = req.params;
 
   try {
-    const response = await Axios.post(
-      "https://home.passwordless.com.au/api/verifyToken",
-      {
-        accessToken,
-      }
+    const response = await Axios.get(
+      "https://api.passwordless.com.au/v1/verifyToken/" + accessToken
     );
 
     console.log(response.data);
