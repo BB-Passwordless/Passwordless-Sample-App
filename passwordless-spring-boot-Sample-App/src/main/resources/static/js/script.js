@@ -1,14 +1,12 @@
-const fido = new passwordless(
-    "BASE_URL",
-    "CLIENT_ID",
+Passwordless.init(
+  "BASE_URL",
+  "CLIENT_ID"
 );
-
-
 const getAppDetails = async () => {
   const logoImage = document.getElementById("logo");
   console.log(logoImage);
   try {
-    const response = await fido.getApplicationNameAndLogo();
+    const response = await Passwordless.getApplicationNameAndLogo();
     console.log(response);
 
     if (response.logo) {
@@ -20,6 +18,7 @@ const getAppDetails = async () => {
   }
 };
 getAppDetails();
+
 function randomString(length, chars) {
   var result = "";
   for (var i = length; i > 0; --i)
@@ -29,8 +28,8 @@ function randomString(length, chars) {
 
 const generateRandomId = () => {
   const rString = randomString(
-      32,
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    32,
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
   );
   return rString;
 };
@@ -41,27 +40,22 @@ const registerFun = async () => {
   qrImg.src = "#";
 
   const username = this.username.value;
-  console.log(username);
+  //console.log(username);
   if (this.authMethod.value == 1) {
-    fido
-        .register({ username })
-        .then(async (response) => {
-          console.log(response);
-          if (response.verified) {
-            await AddToAudit(response.userId, 1, "success");
-            window.location.href = "/register-success";
-          } else await AddToAudit(response.userId, 1, "error");
-        })
-        .catch(async (error) => {
-          alert(error);
-        });
+    Passwordless.register({ username })
+      .then(async (response) => {
+        if (response.verified) {
+          window.location.href = "/register-success";
+        }
+      })
+      .catch(async (error) => {
+        alert(error);
+      });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 1, "web");
   } else if (this.authMethod.value == 3) {
     generateQR(username, 1, "app");
-
   }
-
 };
 
 const loginFun = async () => {
@@ -71,25 +65,25 @@ const loginFun = async () => {
   qrImg.src = "#";
 
   if (this.authMethod.value == 1) {
-    fido.login({ username })
-        .then(async (response) => {
-          if (response.verified) {
-            await AddToAudit(response.userId, 2, "success");
-            window.location.href = "/login-success";
-          } else await AddToAudit(response.userId, 2, "error");
-        })
-        .catch(async (error) => {
-          alert(error);
-        });
+    Passwordless.login({ username })
+      .then(async (response) => {
+        if (response.verified) {
+          window.location.href = "/login-success";
+        }
+      })
+      .catch(async (error) => {
+        alert(error);
+      });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 2, "web");
   } else if (this.authMethod.value == 3) {
     generateQR(username, 2, "app");
-
+  } else if (this.authMethod.value == 4) {
+    generateQR(username, 2, "app", "push");
   }
 };
 
-const generateQR = async (username, type, platform = "web") => {
+const generateQR = async (username, type, platform = "web", method = "qr") => {
   const qrImg = document.getElementById("qrImg");
   qrImg.src = "#";
   const success = async (position) => {
@@ -119,35 +113,44 @@ const generateQR = async (username, type, platform = "web") => {
       platform,
       reqTime,
       path,
+      email: username,
     };
-    //console.log(userDetails);
 
-    fido
-        .generateQR(userDetails)
-        .then(async (response) => {
-          //console.log(response);
-          qrImg.src = response.url;
+    let remoteResponse;
 
-          console.log({ accessToken: response.accessToken });
+    try {
+      if (method == "push") {
+        remoteResponse = await Passwordless.sendPushNotification(userDetails);
+        const device = remoteResponse?.devices?.join(", ");
+        alert("push notification sent successfully to " + device);
+      } else {
+        remoteResponse = await Passwordless.generateQR(userDetails);
+        qrImg.src = remoteResponse.url;
+        type === 1
+          ? $("#RegisterModal").modal("show")
+          : $("#loginModal").modal("show");
+      }
 
-          if (type === 2) $("#modal").modal("show");
-          else $("#modal").modal("show");
+      console.log({ accessToken: remoteResponse.accessToken });
+      const { transactionId } = remoteResponse;
 
-          console.log(userDetails);
+      const transactionResponse =
+        await Passwordless.getTransactionStatusOnChange(transactionId);
 
-          const transactionResponse = await fido.getTransactionStatusOnChange(
-              userDetails.id
-          );
-          if (transactionResponse.status == "SUCCESS") {
-            console.log("transaction success");
-            if (type == 1) window.location.href = "/register-success";
-            else if (type == 2) window.location.href = "/login-success";
-            else if (type == 3) window.location.href = "/addDeviceSuccess";
-          } else {
-            console.log("Something went wrong");
-          }
-        })
-        .catch((error) => alert(error));
+      if (transactionResponse.status === "SUCCESS") {
+        window.location.href =
+          type === 1 ? "/register-success" : "/login-success";
+      } else if (transactionResponse.status === "FAILED") {
+        transactionResponse.message
+          ? alert(transactionResponse.message)
+          : alert("Authentication Failed");
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
   };
 
   function error() {
@@ -171,18 +174,15 @@ const addDevice = async (sessionId) => {
   const username = this.username.value;
   //console.log(username);
   if (this.authMethod.value == 1) {
-    fido
-        .addDevice(username)
-        .then(async (response) => {
-          if (response.verified) {
-            await AddToAudit(response.userId, 3, "success");
-
-            alert("new device added successfully");
-          } else await AddToAudit(response.userId, 3, "error");
-        })
-        .catch(async (error) => {
-          alert(error);
-        });
+    Passwordless.addDevice(username)
+      .then(async (response) => {
+        if (response.verified) {
+          alert("new device added successfully");
+        }
+      })
+      .catch(async (error) => {
+        alert(error);
+      });
   } else if (this.authMethod.value == 2) {
     generateQR(username, 3, "web", sessionId);
   } else if (this.authMethod.value == 3) {
@@ -191,67 +191,58 @@ const addDevice = async (sessionId) => {
   } else alert("not done yet");
 };
 
-const AddToAudit = async (userId, type, label) => {
-  const ispAPI = await fetch("https://ipapi.co/json");
-
-  const data = await ispAPI.json();
-  const ua = detect.parse(navigator.userAgent);
-  data.time = new Date();
-  (data.browser = ua.browser.name), (data.device = ua.os.name);
-  data.label = label;
-  fido.Audit({ userId, data, type });
-};
-
 const approveRegister = () => {
   const { username, id } = document.getElementById("user-data").dataset;
-  fido
-      .register({ username, id })
-      .then(async (response) => {
-        console.log(response);
-        if (response.verified) {
-          await AddToAudit(response.userId, 1, "success");
-          window.location.href = "/register-success";
-        } else await AddToAudit(response.userId, 1, "error");
-      })
-      .catch(async (error) => {
-        alert(error);
-      });
+  Passwordless.register({ username, id })
+    .then(async (response) => {
+      console.log(response);
+      if (response.verified) {
+        window.location.href = "/register-success";
+      }
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
 };
 
 const approveLogin = () => {
   const { username, id } = document.getElementById("user-data").dataset;
-  console.log(username, id);
-
-  fido
-      .login({ username, id })
-      .then(async (response) => {
-        console.log("loginResponse", response);
-        if (response.verified) {
-          await AddToAudit(response.userId, 2, "success");
-          window.location.href = "/login-success";
-        } else await AddToAudit(response.userId, 2, "error");
-      })
-      .catch(async (error) => {
-        alert(error);
-      });
+  Passwordless.login({ username, id })
+    .then(async (response) => {
+      console.log("loginResponse", response);
+      if (response.verified) {
+        window.location.href = "/login-success";
+      }
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
 };
 
-const declineProcess = (process) => {
-  window.close();
+const declineProcess = async () => {
+  const { id } = document.getElementById("user-data").dataset;
+  try {
+    const response = await Passwordless.declineTransaction(id);
+
+    if (response.errorCode === 0) {
+      window.close();
+    }
+  } catch (error) {
+    alert(error.message);
+  }
 };
 
-const approveDevice = (username, id) => {
-  fido
-      .addDevice({ username, id })
-      .then(async (response) => {
-        console.log(response);
-        if (response.verified) {
-          await AddToAudit(response.userId, 3, "success");
-          alert("device added successfully");
-          window.close();
-        } else await AddToAudit(response.userId, 3, "error");
-      })
-      .catch(async (error) => {
-        alert(error);
-      });
+const approveDevice = () => {
+  const { username, id } = document.getElementById("user-data").dataset;
+  Passwordless.addDevice({ username, id })
+    .then(async (response) => {
+      console.log(response);
+      if (response.verified) {
+        alert("device added successfully");
+        window.close();
+      }
+    })
+    .catch(async (error) => {
+      alert(error);
+    });
 };

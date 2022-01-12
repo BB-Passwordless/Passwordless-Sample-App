@@ -35,7 +35,7 @@ const Details = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await Axios.post("/verifyToken", { accessToken });
+        const response = await Axios.get("/verifyToken/"+accessToken );
         const { type, latitude, longitude } = response.data;
         if (type === 1) response.data.type = "Register";
         else if (type === 2) response.data.type = "Login";
