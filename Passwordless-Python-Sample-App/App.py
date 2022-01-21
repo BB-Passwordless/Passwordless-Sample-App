@@ -29,7 +29,7 @@ def loginToken(accessToken):
     my_headers = {'Content-Type' : 'application/json'}
 
     try:
-        response = requests.post("https://home.passwordless.com.au/api/verifyToken",headers=my_headers,data=json.dumps({'accessToken':accessToken}))
+        response = requests.get("https://api.passwordless.com.au/v1/verifyToken/"+accessToken, headers=my_headers)
         data = response.json()
         print(data)
         if 'errorCode' in data and data['errorCode'] == -1:
@@ -38,8 +38,8 @@ def loginToken(accessToken):
            
             return render_template("Details.html",title="Approve Login",data=data)
         else:
-            return data;
-             #return render_template("Details.html",title="Approve Register",data=data)
+            
+            return render_template("Details.html",title="Approve Register",data=data)
     
     except Exception as e:
         print("error",e)
@@ -47,6 +47,6 @@ def loginToken(accessToken):
    
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8085)
 
 
