@@ -3,7 +3,7 @@
 This is Sample app for Passwordless authentication, which is used to demonstrate how to use passwordless authentication. 
 
 
-- Create free account on https://home.passwordless.com.au
+- Create free account on https://home.passwordless4u.com
 
 - Create a web app
 
@@ -68,7 +68,7 @@ http://localhost:8080
 
 ## Feedback
 
-If you have any feedback, please reach out to us at help@passwordless.com.au
+If you have any feedback, please reach out to us at help@passwordless4u.com
 
 
 ## Features

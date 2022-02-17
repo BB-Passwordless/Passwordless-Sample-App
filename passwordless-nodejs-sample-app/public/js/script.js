@@ -1,6 +1,6 @@
 
 Passwordless.init(
-  "https://api.passwordless.com.au/v1",
+  "https://api.passwordless4u.com/v1",
   "CLIENT_ID",
 );
 const getAppDetails = async () => {

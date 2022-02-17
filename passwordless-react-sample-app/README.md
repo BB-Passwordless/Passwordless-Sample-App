@@ -3,7 +3,7 @@
 This is Sample app for Passwordless authentication, which is used to demonstrate how to use passwordless authentication. 
 
 
-- Create free account on https://home.passwordless.com.au
+- Create free account on https://home.passwordless4u.com
 
 - Create a web app
 
@@ -34,8 +34,8 @@ This is Sample app for Passwordless authentication, which is used to demonstrate
 
 ```bash
 
-REACT_APP_BASE_URL=BASE_URL # e.g. https://home.passwordless.com.au
-REACT_APP_CLIENT_ID=YOUR_CLIENT_ID  # You can get this from https://home.passwordless.com.au
+REACT_APP_BASE_URL=BASE_URL # e.g. https://home.passwordless4u.com
+REACT_APP_CLIENT_ID=YOUR_CLIENT_ID  # You can get this from https://home.passwordless4u.com
 
 ```
 
@@ -81,7 +81,7 @@ http://localhost:3000
 
 ## Feedback
 
-If you have any feedback, please reach out to us at help@passwordless.com.au
+If you have any feedback, please reach out to us at help@passwordless4u.com
 
 
 ## Features
