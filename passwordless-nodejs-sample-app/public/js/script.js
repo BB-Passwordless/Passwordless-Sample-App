@@ -1,7 +1,7 @@
 
 Passwordless.init(
   "https://api.passwordless.com.au/v1",
-  "CLIENT_ID",
+  "ULq_lWXVG_2S32oWh-P3ytdt8RSZGwtlGGfv8LwrQ4RSLOTtHH"
 );
 const getAppDetails = async () => {
   const logoImage = document.getElementById("logo");

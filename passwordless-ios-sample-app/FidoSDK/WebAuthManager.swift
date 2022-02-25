@@ -15,7 +15,6 @@ import Alamofire
 
 
 
-
 @objc protocol WebAuthManagerDelegate:AnyObject{
     @objc optional func fidoResponseData(json:Dictionary<String, Any>)
     @objc optional func failureResult(error:String)
@@ -62,10 +61,11 @@ public enum FormError : Error {
     var assertionChallange : String?
     var assertionRpId : String?
     
+    
+    var originStrd = String()
     @objc func loadSDK(baseurl:NSString) {
         
         self.baseUrl = baseurl as String
-        //self.delegate=self
     }
     
     override init() {
@@ -86,6 +86,7 @@ public enum FormError : Error {
     
     @objc func setupWebLoginClient(originStr:String,viewController:UIViewController) {
         WAKLogger.available = true
+        self.originStrd = originStr
         self.userConsentUI = UserConsentUI(viewController: viewController)
         self.userConsentUI.config.alwaysShowKeySelection = true
         
@@ -166,10 +167,10 @@ public enum FormError : Error {
         options.user.name = userName
         options.user.displayName = displayName
         
-        options.user.icon = "https://demo.axiomprotect.com:4443/sonickyc/logo.jpeg"
+        //options.user.icon = "https://demo.axiomprotect.com:4443/sonickyc/logo.jpeg"
         options.rp.id = rpId
         options.rp.name = rpId
-        options.rp.icon = "https://developers.google.com/identity/images/g-logo.png"
+       // options.rp.icon = "https://developers.google.com/identity/images/g-logo.png"
         
         options.attestation = attestation
         options.addPubKeyCredParam(alg: .es256)
@@ -185,8 +186,7 @@ public enum FormError : Error {
         print("challenge: " + Base64.encodeBase64URL(options.challenge))
         print("==========================================")
         
-        //self.webAuthnClient.minTimeout = 5
-        //self.webAuthnClient.defaultTimeout = 5
+     
         
         firstly {
             
@@ -216,47 +216,49 @@ public enum FormError : Error {
         
     }
     
-@objc func verifyToken(accessToken:String) {
-        
-        let url = self.baseUrl + "verifyToken"
-        let parameter = ["accessToken":accessToken] as! [String:Any]
-        
-        print(parameter)
-        
-        AF.request(url, method: .post, parameters: parameter, encoding:JSONEncoding.default,headers: nil).responseJSON { response in
-            print(response)
-            
-            if let json = response.value as? [String:Any] {
-                do{
-                    self.delegate?.fidoResponseData?(json: json)
-                    
-                }catch let err{
-                    
-                    
-                    self.delegate?.failureResult?(error: err.localizedDescription)
-                
-                }
-            }else{
-                print(response.value)
-                let json = response.value as? [String:Any]
-                if(json?.count != 0)
-                {
-                    self.delegate?.fidoResponseData?(json: json!)
+    //MARK:- get Logo & app Name
+    
+    @objc func getLogoName(clientId:String) {
+    
+            let url = self.baseUrl + "/app/applicationDetails/\(clientId)"
+         
+            print(url)
+    
+        AF.request(url, method: .get, encoding:JSONEncoding.default,headers: nil).responseJSON { response in
+                print(response)
+    
+                if let json = response.value as? [String:Any] {
+                    do{
+                        self.delegate?.fidoResponseData?(json: json)
+    
+                    }catch let err{
+    
+                        self.delegate?.failureResult?(error: err.localizedDescription)
+    
+                    }
                 }else{
-                    self.delegate?.failureResult?(error: response.error!.localizedDescription)
+                    print(response.value)
+                    let json = response.value as? [String:Any]
+                    if(json?.count != 0)
+                    {
+                        self.delegate?.fidoResponseData?(json: json ?? ["":""])
+                    }else{
+                        self.delegate?.failureResult?(error: response.error!.localizedDescription)
+                    }
                 }
             }
+    
         }
-        
-    }
-    //register
+    
+    //MARK: - Verify register user
     func verifyRegistrationResponse(){
        
-        let url = self.baseUrl + "verify-registerUser-attestation-ios"
+        let url = self.baseUrl + "/verify-registerUser-attestation-ios"
         
         let parameter = ["username":self.userNameStr!,
                          "challenge":self.challangeCodeStr!,
                          "clientId":clientIdStr!,
+                         "reqOrigin":originStrd,
                          "credential":[ "id":self.credentialId,
                                         "rawId":self.rawId,
                                         "type": self.typePublic,
@@ -272,16 +274,14 @@ public enum FormError : Error {
             
             if let json = response.value as? [String:Any] {
                 do{
-                 
-                    self.delegate?.fidoResponseData?(json: json)
-                    
-           
+            
                 }catch let err{
                     
                     
                     self.delegate?.failureResult?(error: err.localizedDescription)
                     print(err)
-               
+                  
+                    
                 }
             }else{
                 print(response.value)
@@ -298,14 +298,16 @@ public enum FormError : Error {
         
     }
     
- //register
-    @objc func generateAttestationOptions(userId:String,clientId:String,rpId:String,viewController:UIViewController){
+ //MARK:- register user
+    @objc func generateAttestationOptions(userId:String,clientId:String,originStr:String, viewController:UIViewController){
         userNameStr=userId
         clientIdStr=clientId
-        let url = baseUrl + "registerUser"
+        originStrd=originStr
+        let url = baseUrl + "/registerUser"
         print(url)
         let parameter = ["username":userNameStr,
                          //"name":nameStr,
+                         "reqOrigin":originStrd,
                          "clientId":clientIdStr] as! [String:String]
         print(parameter)
         AF.request(url, method: .post, parameters: parameter, encoding:JSONEncoding.default,headers: nil).responseJSON { response in
@@ -316,11 +318,10 @@ public enum FormError : Error {
                 do{
                     let decoder = JSONDecoder()
                     let resp = try decoder.decode(FIDOModal.self, from: json)
-                        
-                    //WebAuthManager.sharedInstance.challangeCodeStr = resp.challenge
+
                     self.challangeCodeStr = resp.challenge
                     self.userNameStr = resp.user.name
-                    self.rpIdStr = rpId//"home.passwordless.com.au"//resp.rp.id ??
+                    self.rpIdStr = resp.rp.id
                     self.displayNameStr = resp.user.displayName
                     self.attestationStr = resp.attestation ?? "direct"
                     self.userVerificationStr = resp.authenticatorSelection.userVerification ?? "required"
@@ -349,16 +350,17 @@ public enum FormError : Error {
         }
     }
     
-    //login//
-    @objc func generateAssertionOptions(userId:String,clientId:String,viewController:UIViewController){
+    //MARK:- login user
+    
+    @objc func generateAssertionOptions(userId:String,clientId:String, originStr:String, viewController:UIViewController){
         
         userNameStr=userId
         clientIdStr=clientId
-        
-        let url = baseUrl + "LoginUser"
+        originStrd = originStr
+        let url = baseUrl + "/LoginUser"
         print(url)
         let parameter = ["username":userNameStr,
-                         //"name":nameStr,
+                         "reqOrigin":originStrd,
                          "clientId":clientIdStr] as! [String:String]
         print(parameter)
         AF.request(url, method: .post, parameters: parameter, encoding:JSONEncoding.default,headers: nil).responseJSON { response in
@@ -368,8 +370,10 @@ public enum FormError : Error {
                 do{
                     let decoder = JSONDecoder()
                     let resp = try decoder.decode(AssertionModal.self, from: json)
+                    //   let challenge = UserDefaults.standard.value(forKey: "challangeCode") as? String
                     self.assertionChallange = resp.challenge
                     self.assertionRpId = resp.rpID
+                  
                     self.asscredentialId = resp.allowCredentials[0].id
                     print(self.asscredentialId)
                     self.userVerificationStr = resp.userVerification ?? "required"
@@ -439,21 +443,18 @@ public enum FormError : Error {
                 options.addAllowCredential(
                     credentialId: Bytes.fromHex(credId),
                     transports:   [.internal_]
-                    // typePublic: "public-key"
                 )
                 
             }
             
         }
-        //print("credentialId ==")
-        //options.timeout = UInt64(120)
+
         
         print("==========================================")
         print("challenge: " + Base64.encodeBase64URL(options.challenge))
         print("==========================================")
         
-        //self.webAuthnClient.minTimeout = 5
-        //self.webAuthnClient.defaultTimeout = 5
+    
         
         firstly {
             
@@ -470,8 +471,7 @@ public enum FormError : Error {
             print("userHandle: " + Base64.encodeBase64URL(assertion.response.userHandle!))
             print("clientDataJSON: " + Base64.encodeBase64URL(assertion.response.clientDataJSON.data(using: .utf8)!))
             print("==========================================")
-            // self.showResult(assertion)
-            //self.assertionSignature = Base64.encodeBase64URL(assertion.response.signature)
+            
             self.assertType = assertion.type.rawValue
             self.assertionId = assertion.id
             self.assertionRawId = Base64.encodeBase64URL(assertion.rawId)
@@ -494,25 +494,14 @@ public enum FormError : Error {
     
     private func showResult(_ credential: WebAuthnClient.CreateResponse,viewController:UIViewController) {
         
-        //        let rawId             = credential.rawId.toHexString()
-        //        let credId            = credential.id
-        //        let clientDataJSON    = credential.response.clientDataJSON
-        //        let attestationObject = Base64.encodeBase64URL(credential.response.attestationObject)
-        //
-        //        let vc = ResultViewController(
-        //            rawId:             rawId,
-        //            credId:            credId,
-        //            clientDataJSON:    clientDataJSON,
-        //            attestationObject: attestationObject
-        //        )
-        //
-        //        viewController.present(vc, animated: true, completion: nil)
+ 
     }
     
-    //login
+    //MARK:- Verify login user
+    
     func verifyLoginResponse(){
         
-        let url = self.baseUrl + "verify-loginUser-assertion-ios"
+        let url = self.baseUrl + "/verify-loginUser-assertion-ios"
         print(url)
         let parameter = ["username":self.userNameStr!,
                         // "name":nameStr!,
@@ -521,6 +510,7 @@ public enum FormError : Error {
                          "type": assertType,
                          "challenge": assertionChallange!,
                          "clientId":clientIdStr!,
+                         "reqOrigin":originStrd,
                          "response":["authenticatorData":assertionAuthentuicationData,
                                      "clientDataJSON":assertionClientDataJson,
                                      "userHandle":assertionUserHandle,
@@ -532,14 +522,15 @@ public enum FormError : Error {
             
             if let json = response.value as? [String:Any] {
                 do{
-                  
+                
+                    
                     self.delegate?.fidoResponseData?(json: json)
-           
+              
                     
                 }catch let err{
                     self.delegate?.failureResult?(error: err.localizedDescription)
                     print(err)
-                 
+                
                 }
             }
         }
@@ -563,9 +554,7 @@ public enum FormError : Error {
     }
     
     func postData(data: String , key:String) {
-        //   let socket = manager.defaultSocket
-        // socket.emit(key, data)
-        
+    
     }
     
 }

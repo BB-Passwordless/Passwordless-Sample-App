@@ -15,6 +15,8 @@ import ProgressHUD
 
 class RegisterAuthenticateVC: UIViewController ,FidoSDKDelegate{
 
+//logo = "https://picsum.photos/300";
+    @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var alreadyLoginAndRegBtn: UIButton!
     @IBOutlet weak var submitBtn: UIButton!
     @IBOutlet weak var lblTitle: UILabel!
@@ -27,12 +29,15 @@ class RegisterAuthenticateVC: UIViewController ,FidoSDKDelegate{
     var sdk = FidoSDK()
     var clientID = String()
     var rpId = String()
-
+    var originStr = String()
     override func viewDidLoad() {
         super.viewDidLoad()
-        baseUrl = "https://home.passwordless.com.au/api/"
+        
+        baseUrl = "https://api.passwordless4u.com/v1"//"https://home.passwordless.com.au"//change base url
+        
         sdk.fidoDelegate=self
         sdk.load(baseUrl)
+        
         ShowDetails()
     }
     
@@ -45,18 +50,22 @@ class RegisterAuthenticateVC: UIViewController ,FidoSDKDelegate{
     func ShowDetails(){
         
         userNameStr = userText.text
-        let originStr = "https://home.passwordless.com.au"
-        lblTitle.text = "Passwordless Register"
-        clientID = "cPiGnj-KxYvWsIXNvBVFqZfG65UIR8WkHGIgX35piZpHGTD0bi"
-        self.rpId = "home.passwordless.com.au"
+        
+        self.originStr = "https://test-or9t8esvh5.passwordless4u.com"//"https://home.passwordless.com.au" // here change originStr
+        
+        clientID = "X4k_74f3hvQhmLX-65QcDBpt7QO8W8NRWdHfS4DtgzpwQHhiQA" // change client ID
+        
+        self.rpId = "home.passwordless4u.com"  // change rp id
+        
         sdk.setupRegistrationClient(originStr, self)
+        sdk.getLogoName(clientID)
         
     }
     @IBAction func registerBtnTapped(_ sender: Any) {
         
         print("Registration")
        
-        sdk.register(withFido: userText.text!,clientId: clientID, rpId: rpId ,viewcontroller: self)
+        sdk.register(withFido: userText.text!,clientId: clientID, originStr: originStr,viewcontroller: self)
     }
     
     @IBAction func alreadyRegisterBtnTapped(_ sender: Any) {
@@ -79,37 +88,44 @@ class RegisterAuthenticateVC: UIViewController ,FidoSDKDelegate{
 
 extension RegisterAuthenticateVC:AlertViewDelegate{
     func alertViewRemoved() {
-//        let appDelegate = UIApplication.shared.delegate! as! AppDelegate
-//        let rootController = HomeVC(nibName: "HomeVC", bundle: nil)
-//        let navigationBar = UINavigationController.init(rootViewController: rootController)
-//        appDelegate.window?.rootViewController = navigationBar
         
     }
     
+   //MARK:- sdk delegate response
     
     func didReceivedResponse(fromFidoSDK response: [String : Any]) {
         print("didReceivedResponse")
         print(response)
-        let verified = response["verified"] as? Bool ?? false
-        print(verified)
-        
-        let errorCode = response["errorCode"] as? Int
-        print(errorCode)
-        
-        if(verified)
-        {
+      
+        if response["verified"] == nil {
+            lblTitle.text = "\(response["name"] as? String ?? "") Register"
+            guard let url = URL(string:response["logo"] as? String ?? "" ) else { return  }
+            let data = try? Data(contentsOf: url)
+
+            if let imageData = data {
+                logoImage.image = UIImage(data: imageData)
+            }
+           
+        }else {
+            let verified = response["verified"] as? Bool ?? false
+            print(verified)
             
-            AlertView.alertView.showAlert(message:"Client registered successfully", imageName: "success", btnTitle: .Success)
+            let errorCode = response["errorCode"] as? Int
+            print(errorCode)
             
-        }else if(errorCode != nil){
+            if(verified)
+            {
+                AlertView.alertView.showAlert(message:"Client Registe in successfully", imageName: "success", btnTitle: .Success)
+              
+            }else if(errorCode != nil){
+                
+                let message = response["errorMessage"] as? String
+                AlertView.alertView.showAlert(message:message ?? "Failed to get response", imageName: "failed", btnTitle: .Success)
+            }else{
+                AlertView.alertView.showAlert(message:"failed to login user", imageName: "success", btnTitle: .Success)
+            }
             
-            let message = response["errorMessage"] as? String
-            AlertView.alertView.showAlert(message:message ?? "Failed to get response", imageName: "failed", btnTitle: .Success)
-        }else{
-            AlertView.alertView.showAlert(message:"failed to register user", imageName: "success", btnTitle: .Success)
-    
         }
-        
     }
     
     func didReceivedErrorFidoSDK(_ error: String) {

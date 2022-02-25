@@ -2,8 +2,7 @@
 //  FidoSDK.m
 //  FidoSDK
 //
-//  Created by mac mini on 9/27/21.
-//  Copyright © 2021 Lyo Kato. All rights reserved.
+
 //
 
 #import "FidoSDK.h"
@@ -37,18 +36,22 @@
 
 }
 
--(void)registerWithFido:(NSString *)userId clientId:(NSString*)clientId rpId:(NSString *)rpId viewcontroller:(UIViewController*)viewController{
+-(void)registerWithFido:(NSString *)userId clientId:(NSString*)clientId originStr:(NSString*)originStr viewcontroller:(UIViewController*)viewController{
     
     
-    [[WebAuthManager sharedInstance] generateAttestationOptionsWithUserId:userId clientId:clientId rpId:rpId viewController:viewController];
+    [[WebAuthManager sharedInstance] generateAttestationOptionsWithUserId:userId clientId:clientId originStr:originStr viewController:viewController];
     
 }
--(void)loginWithFido:(NSString *)userId clientId:(NSString*)clientId viewcontroller:(UIViewController*)viewController
+-(void)loginWithFido:(NSString *)userId clientId:(NSString*)clientId originStr:(NSString*)originStr viewcontroller:(UIViewController*)viewController
 {
     
-    [[WebAuthManager sharedInstance] generateAssertionOptionsWithUserId:userId clientId:clientId viewController:viewController];
+    [[WebAuthManager sharedInstance] generateAssertionOptionsWithUserId:userId clientId:clientId originStr:originStr  viewController:viewController];
    
 }
+-(void)getLogoName:(NSString *)clientId {
+    [[WebAuthManager sharedInstance]getLogoNameWithClientId:clientId];
+}
+
 
 - (void)fidoResponseDataWithJson:(NSDictionary<NSString *,id> *)json{
     

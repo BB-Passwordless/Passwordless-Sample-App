@@ -15,6 +15,8 @@ import ProgressHUD
 
 class LoginAuthenticateVC: UIViewController, FidoSDKDelegate{
 
+    @IBOutlet weak var lblTitle: UILabel!
+    @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var subView: UIView!
     @IBOutlet weak var userText: UITextField!
     
@@ -22,11 +24,16 @@ class LoginAuthenticateVC: UIViewController, FidoSDKDelegate{
     var baseUrl = String()
     var sdk = FidoSDK()
     var clientID = String()
+    var originStr = String()
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        baseUrl = "https://home.passwordless.com.au/api/"
+        
+        baseUrl = "https://api.passwordless4u.com/v1"//"https://home.passwordless.com.au" // change base url
+        
         sdk.fidoDelegate=self
         sdk.load(baseUrl)
+        
         ShowDetails()
     }
 
@@ -38,15 +45,18 @@ class LoginAuthenticateVC: UIViewController, FidoSDKDelegate{
     func ShowDetails(){
         
         userNameStr = userText.text
-        let originStr = "https://home.passwordless.com.au"
-        clientID = "cPiGnj-KxYvWsIXNvBVFqZfG65UIR8WkHGIgX35piZpHGTD0bi"
+        
+        let originStr = "https://test-or9t8esvh5.passwordless4u.com"   //chnage origin here
+        
+        clientID = "X4k_74f3hvQhmLX-65QcDBpt7QO8W8NRWdHfS4DtgzpwQHhiQA" //Change client id
+        
         sdk.setupLoginClient(originStr, self)
-
+        sdk.getLogoName(clientID)
     }
     @IBAction func loginBtnTapped(_ sender: Any) {
-        print("Registration")
+        print("Login")
        
-        sdk.login(withFido: userText.text!,clientId:clientID  ,viewcontroller: self)
+        sdk.login(withFido: userText.text!,clientId:clientID, originStr: originStr  ,viewcontroller: self)
     }
     
     @IBAction func alreadyLoginBtnTapped(_ sender: Any) {
@@ -66,34 +76,45 @@ class LoginAuthenticateVC: UIViewController, FidoSDKDelegate{
         return base64
     }
 }
+
 extension LoginAuthenticateVC:AlertViewDelegate{
    func alertViewRemoved() {
-//        let appDelegate = UIApplication.shared.delegate! as! AppDelegate
-//        let rootController = HomeVC(nibName: "HomeVC", bundle: nil)
-//        let navigationBar = UINavigationController.init(rootViewController: rootController)
-//        appDelegate.window?.rootViewController = navigationBar
+
     }
     
+   //MARK:- sdk delegate response
     
     func didReceivedResponse(fromFidoSDK response: [String : Any]) {
         print("didReceivedResponse")
         print(response)
-        let verified = response["verified"] as? Bool ?? false
-        print(verified)
-        
-        let errorCode = response["errorCode"] as? Int
-        print(errorCode)
-        
-        if(verified)
-        {
-            AlertView.alertView.showAlert(message:"Client logged in successfully", imageName: "success", btnTitle: .Success)
-          
-        }else if(errorCode != nil){
+        if response["verified"] == nil {
             
-            let message = response["errorMessage"] as? String
-            AlertView.alertView.showAlert(message:message ?? "Failed to get response", imageName: "failed", btnTitle: .Success)
-        }else{
-            AlertView.alertView.showAlert(message:"failed to login user", imageName: "success", btnTitle: .Success)
+            lblTitle.text = "\(response["name"] as? String ?? "") Register"
+            guard let url = URL(string:response["logo"] as? String ?? "" ) else { return  }
+            let data = try? Data(contentsOf: url)
+
+            if let imageData = data {
+                logoImage.image = UIImage(data: imageData)
+            }
+        }else {
+            let verified = response["verified"] as? Bool ?? false
+            print(verified)
+            
+            let errorCode = response["errorCode"] as? Int
+            print(errorCode)
+            
+            if(verified)
+            {
+                AlertView.alertView.showAlert(message:"Client logged in successfully", imageName: "success", btnTitle: .Success)
+              
+            }else if(errorCode != nil){
+                
+                let message = response["errorMessage"] as? String
+                AlertView.alertView.showAlert(message:message ?? "Failed to get response", imageName: "failed", btnTitle: .Success)
+            }else{
+                AlertView.alertView.showAlert(message:"failed to login user", imageName: "success", btnTitle: .Success)
+            }
+            
         }
         
     }
