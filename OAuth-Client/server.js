@@ -90,7 +90,7 @@ Issuer.discover("YOUR_DOMAIN/oidc") // => Promise
       passport.authenticate("oidc", {
         scope: "openid email  api:read api:write",
         prompt: "consent",
-        resource: "https://home.passwordless.com.au/secured/read",
+        resource: "https://home.passwordless4u.com/secured/read",
       })
     );
 

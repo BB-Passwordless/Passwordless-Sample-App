@@ -21,7 +21,8 @@ const Details = () => {
   useEffect(() => {
     const getApplicationNameAndLogo = async () => {
       try {
-        const response = await Passwordless.getApplicationNameAndLogo();
+    const response = await Passwordless.getApplicationNameAndLogo();
+
         console.log(response);
         setAppData(response);
       } catch (error) {

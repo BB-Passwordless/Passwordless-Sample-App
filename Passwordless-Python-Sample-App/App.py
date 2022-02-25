@@ -29,7 +29,7 @@ def loginToken(accessToken):
     my_headers = {'Content-Type' : 'application/json'}
 
     try:
-        response = requests.get("https://api.passwordless.com.au/v1/verifyToken/"+accessToken, headers=my_headers)
+        response = requests.get("https://api.passwordless4u.com/v1/verifyToken/"+accessToken, headers=my_headers)
         data = response.json()
         print(data)
         if 'errorCode' in data and data['errorCode'] == -1:

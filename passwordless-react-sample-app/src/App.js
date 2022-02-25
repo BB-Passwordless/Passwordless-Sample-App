@@ -10,7 +10,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/success" element={<Success />} />
-
         <Route path="/" element={<Home type="Login" />} />
         <Route path="/register" element={<Home type="Register" />} />
         <Route path="/authToken/:accessToken" element={<Details />} />

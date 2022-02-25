@@ -57,7 +57,7 @@ public class PasswordlessSampleAppApplication {
 	@RequestMapping(value = "/authenticateToken/{accessToken}")
 	public String approveToken(@PathVariable String accessToken, Model model) throws JsonProcessingException {
 
-		String url = "https://home.passwordless.com.au/api/verifyToken";
+		String url = "https://home.passwordless4u.com/api/verifyToken";
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HashMap<String, String> map = new HashMap<>();
