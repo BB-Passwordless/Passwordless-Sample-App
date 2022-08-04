@@ -17,8 +17,18 @@ export class ServiceProviderController {
     await this.serviceProviderService.spInitiatedPost(req, res);
   }
 
+  @Get('logout')
+  async spInitiatedLogout(@Res() res: any, @Req() req: any) {
+    await this.serviceProviderService.spInitiatedLogout(req, res);
+  }
+
   @Post('acs')
   async acs(@Res() res: any, @Req() req: any) {
     await this.serviceProviderService.acs(req, res);
+  }
+
+  @Post('slo')
+  async slo(@Res() res: any, @Req() req: any) {
+    await this.serviceProviderService.slo(req, res);
   }
 }

@@ -43,7 +43,7 @@ export class ServiceProviderService {
         // ),
 
         privateKey: fs.readFileSync('./encryptKey.pem'),
-        entityID: `http://localhost:5000/saml/sap/234`,
+        entityID: `http://localhost:5000/sp/test`,
         assertionConsumerService: [
           {
             Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
@@ -54,7 +54,7 @@ export class ServiceProviderService {
         //wantMessageSigned: true,
         authnRequestsSigned: false,
 
-        signingCert: fs.readFileSync('./encryptionCert.cer'),
+        signingCert: fs.readFileSync('./encryptionCert.pem'),
       });
       this.sp = sp;
       this.logger.log(
@@ -95,6 +95,19 @@ export class ServiceProviderService {
     }
   }
 
+  async spInitiatedLogout(req: any, res: any) {
+    try {
+      const result = this.sp.createLogoutRequest(this.idp, 'post', {
+        logoutNameID: 'user@esaml2',
+      });
+      console.log(result);
+      return res.render('sp-post', result);
+    } catch (err) {
+      this.logger.error('Error in creating logout request: ' + err.message);
+      throw new HttpException(err.message, err.status || 500);
+    }
+  }
+
   async acs(req: any, res: any) {
     this.logger.log('ACS request received');
     try {
@@ -117,6 +130,19 @@ export class ServiceProviderService {
       return res.send(JSON.stringify(extract, null, 4));
     } catch (err) {
       this.logger.error('Error in acs: ', err);
+      throw new HttpException(err.message, err.status || 500);
+    }
+  }
+
+  async slo(req: any, res: any) {
+    this.logger.log('SLO request received');
+    try {
+      const result = await this.sp.parseLogoutResponse(this.idp, 'post', req);
+      const { extract } = result;
+      this.logger.log(`SLO recieved data parsed: ${JSON.stringify(extract)}`);
+      return res.send(JSON.stringify(extract, null, 4));
+    } catch (err) {
+      this.logger.error('Error in slo: ', err);
       throw new HttpException(err.message, err.status || 500);
     }
   }
