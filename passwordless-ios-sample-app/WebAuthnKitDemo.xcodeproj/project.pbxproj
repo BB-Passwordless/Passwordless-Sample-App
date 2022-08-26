@@ -52,8 +52,8 @@
 		9A1520262701ED7500779DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A15201B2701ED7500779DE5 /* Assets.xcassets */; };
 		9A15202D2701F0AC00779DE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A15202C2701F0AC00779DE5 /* LaunchScreen.storyboard */; };
 		9A15202F2702024E00779DE5 /* WebAuthnKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 90D2EA1021A425DC00032373 /* WebAuthnKit.framework */; };
+		9A2B010B27798A9A00660465 /* libFidoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2B010A27798A9A00660465 /* libFidoSDK.a */; };
 		9ABA6022271D4F0E005C8BF4 /* WebAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA6021271D4F0E005C8BF4 /* WebAuthManager.swift */; };
-		9ABA6025271DA505005C8BF4 /* libFidoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ABA6024271DA505005C8BF4 /* libFidoSDK.a */; };
 		9ADA79A627184A4E003141CC /* RegisterAuthenticateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADA79A427184A4E003141CC /* RegisterAuthenticateVC.swift */; };
 		9ADA79A727184A4E003141CC /* RegisterAuthenticateVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9ADA79A527184A4E003141CC /* RegisterAuthenticateVC.xib */; };
 		9ADA79AA27184A77003141CC /* LoginAuthenticateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADA79A827184A77003141CC /* LoginAuthenticateVC.swift */; };
@@ -173,8 +173,8 @@
 		9A15201B2701ED7500779DE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9A15202C2701F0AC00779DE5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9A15202E2701F0F500779DE5 /* FidoSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FidoSDK.h; path = FidoSDK/FidoSDK.h; sourceTree = SOURCE_ROOT; };
+		9A2B010A27798A9A00660465 /* libFidoSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFidoSDK.a; sourceTree = "<group>"; };
 		9ABA6021271D4F0E005C8BF4 /* WebAuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebAuthManager.swift; sourceTree = "<group>"; };
-		9ABA6024271DA505005C8BF4 /* libFidoSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFidoSDK.a; sourceTree = "<group>"; };
 		9ADA79A427184A4E003141CC /* RegisterAuthenticateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAuthenticateVC.swift; sourceTree = "<group>"; };
 		9ADA79A527184A4E003141CC /* RegisterAuthenticateVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RegisterAuthenticateVC.xib; sourceTree = "<group>"; };
 		9ADA79A827184A77003141CC /* LoginAuthenticateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAuthenticateVC.swift; sourceTree = "<group>"; };
@@ -193,7 +193,7 @@
 			files = (
 				B91D11376957802B96D6EA6E /* Pods_WebAuthnKitDemo.framework in Frameworks */,
 				90D2EA2521A425DD00032373 /* WebAuthnKit.framework in Frameworks */,
-				9ABA6025271DA505005C8BF4 /* libFidoSDK.a in Frameworks */,
+				9A2B010B27798A9A00660465 /* libFidoSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,7 +296,7 @@
 				9ABA6023271DA306005C8BF4 /* CommonFlies */,
 				9ACF6AE0271A8B9400D81D24 /* Controllers */,
 				9A15202E2701F0F500779DE5 /* FidoSDK.h */,
-				9ABA6024271DA505005C8BF4 /* libFidoSDK.a */,
+				9A2B010A27798A9A00660465 /* libFidoSDK.a */,
 				9A15201B2701ED7500779DE5 /* Assets.xcassets */,
 				90D2E9E921A424DD00032373 /* Info.plist */,
 				9A15202C2701F0AC00779DE5 /* LaunchScreen.storyboard */,

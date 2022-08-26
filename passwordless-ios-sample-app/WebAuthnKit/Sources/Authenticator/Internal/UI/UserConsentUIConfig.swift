@@ -30,12 +30,12 @@ public class UserConsentUIConfig {
     
     public var borderLightColor: UInt = 0xbbbbbb
     public var titleTextLightColor: UIColor = UIColor.black
-    public var fieldTextLightColor: UIColor = UIColor.white
+    public var fieldTextLightColor: UIColor = UIColor.black
     public var pickerBackgroundLightColor: UIColor = UIColor.lightGray.withAlphaComponent(0.2)
     public var viewBorderLightColor: UInt = 0xdddddd
     
     public var borderDarkColor: UInt = 0x444444
-    public var titleTextDarkColor: UIColor = UIColor.white
+    public var titleTextDarkColor: UIColor = UIColor.black
     public var fieldTextDarkColor: UIColor = UIColor.black
     public var pickerBackgroundDarkColor: UIColor = UIColor.darkGray.withAlphaComponent(0.2)
     public var viewBorderDarkColor: UInt = 0x222222

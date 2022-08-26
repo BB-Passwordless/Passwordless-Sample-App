@@ -1,9 +1,7 @@
 //
 //  FidoSDK.h
 //  FidoSDK
-//
-//  Created by mac mini on 9/27/21.
-//  Copyright © 2021 Lyo Kato. All rights reserved.
+
 //
 
 #import <Foundation/Foundation.h>
@@ -26,10 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
                           :(UIViewController*)viewController;
 -(void)loadSDK:(NSString*)URL;
 
--(void)registerWithFido:(NSString *)userId clientId:(NSString*)clientId rpId:(NSString *)rpId viewcontroller:(UIViewController*)viewController;
+-(void)registerWithFido:(NSString *)userId clientId:(NSString*)clientId originStr:(NSString*)originStr viewcontroller:(UIViewController*)viewController;
 
--(void)loginWithFido:(NSString *)userId clientId:(NSString*)clientId viewcontroller:(UIViewController*)viewController;
-
+-(void)loginWithFido:(NSString *)userId clientId:(NSString*)clientId originStr:(NSString*)originStr viewcontroller:(UIViewController*)viewController;
+-(void)getLogoName:(NSString*)clientId;// new
 @property (nonatomic, weak) id <FidoSDKDelegate> fidoDelegate;
 
 @end

@@ -37,9 +37,7 @@ class AlertView: UIView {
     }
     
     private func commonInit() {
-        //img.layer.cornerRadius = 30
-//        img.layer.borderColor = UIColor.white.cgColor
-//        img.layer.borderWidth = 2
+
         alertView.layer.cornerRadius = 4
         doneBtn.layer.cornerRadius = 4
         parentView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
@@ -68,16 +66,13 @@ class AlertView: UIView {
         
         if(btnTitle == ButtonType.ok)
         {
-            //doneBtn.backgroundColor = UIColor.init(hexaRGB: "2C32BE")
             doneBtn.setTitleColor(UIColor.white, for: .normal)
             doneBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
        
         }else if(btnTitle == ButtonType.cancel){
             doneBtn.backgroundColor = UIColor.white
-           // doneBtn.setTitleColor(UIColor.init(hexaRGB:"2C32BE"), for: .normal)
             doneBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         }else{
-           // doneBtn.backgroundColor = UIColor.init(hexaRGB: "2C32BE")
             doneBtn.setTitleColor(UIColor.white, for: .normal)
             doneBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         }
