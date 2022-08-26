@@ -11,6 +11,7 @@ const Home = ({ type }) => {
   });
   const [appData, setAppData] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [loginUserDetails, setLoginUserDetails] = useState("")
   useEffect(() => {
     const getApplicationNameAndLogo = async () => {
       try {
@@ -90,7 +91,7 @@ const Home = ({ type }) => {
   const login = async(data) => {
     try {
       const response = await Passwordless.login(data);
-      if(response.verified) navigate("/success", { state: { type: "Login" } });
+      if(response.verified) navigate("/success", { state: { type: "Login", userData: response, appData } });
     }
     catch (error) {
       console.log(error)
@@ -126,7 +127,6 @@ const Home = ({ type }) => {
         path: `${window.location.origin}/approve`,
         name: userData.name,
         reqTime: new Date().toLocaleDateString("en-US"),
-       
         origin: window.location.origin,
         username:userData.username
       };
@@ -200,7 +200,7 @@ const Home = ({ type }) => {
                       <div className="row">
                         <div className="col-md-12 form-group mb-3">
                           <input
-                            type="email"
+                           
                             className="form-control"
                             name="username"
                             id="username"

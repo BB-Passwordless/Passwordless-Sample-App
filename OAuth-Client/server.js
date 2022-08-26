@@ -50,15 +50,15 @@ passport.deserializeUser(function(user, done) {
 });
 
 
-Issuer.discover("YOUR_DOMAIN/oidc") // => Promise
+Issuer.discover("https://avi-6njb24ins3-ccrmVoZ1vwfV2z1.passwordless4u.com/oidc") // => Promise
   .then(function (oidcIssuer) {
     var client = new oidcIssuer.Client({
-      client_id: "CLIENT-ID",
+      client_id: "jnf6KtkyrKN4dsznZIClV",
       client_secret:
-        "CLIENT-SECRET",
-      redirect_uris: ["REDIRECT-URIS"],
+        "tMqvQ-CSCyFrb4v9NzSXyXwVtT2mtA9IbL3Z0coxuFPDqNdQ4GdWJTtHRZUu5RZvlwXAPvHomjW0YKaGXpZ2pQ",
+      redirect_uris: ["http://localhost:8080/auth/callback"],
       response_types: ["code"],
-      post_logout_redirect_uris: ["POST-LOGOUT-REDIRECT-URIS"],
+      post_logout_redirect_uris: ["http://localhost:8080/auth/logout"],
     });
 
     passport.use(

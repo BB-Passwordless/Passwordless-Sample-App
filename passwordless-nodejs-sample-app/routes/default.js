@@ -33,7 +33,7 @@ router.get("/registerToken/:accessToken", async (req, res) => {
   console.log(accessToken);
   try {
     const response = await Axios.get(
-      "https://api.passwordless4u.com/v1/verifyToken/" + accessToken
+      "http://localhost:3006/v1/verifyToken/" + accessToken
     );
     console.log(response.data);
     res.render("registerDetails", {data:response.data});
@@ -50,7 +50,7 @@ router.get("/loginToken/:accessToken", async (req, res) => {
 
   try {
     const response = await Axios.get(
-      "https://api.passwordless4u.com/v1/verifyToken/" + accessToken
+      "http://localhost:3006/v1/verifyToken/" + accessToken
     );
 
     console.log(response.data);

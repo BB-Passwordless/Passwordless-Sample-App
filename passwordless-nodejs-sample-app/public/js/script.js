@@ -1,7 +1,7 @@
 
 Passwordless.init(
-  "https://api.passwordless4u.com/v1",
-  "CLIENT_ID",
+  "http://localhost:3006/v1",
+  "abB8ILGywu-7rtBKfoCOk6b7N1mY-2yvA1ltewbJr6lWq2HHs7",
 );
 const getAppDetails = async () => {
   const logoImage = document.getElementById("logo");

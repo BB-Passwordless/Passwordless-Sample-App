@@ -1,8 +1,28 @@
 
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from 'axios'
 const Success = () => {
+  const navigate= useNavigate()
+  const [appData, setAppData] = useState("");
 
-  const { state: { type } } = useLocation()
+  useEffect(() => {
+    const getApplicationNameAndLogo = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/app/viewApp/${process.env.REACT_APP_CLIENT_ID}`
+        );
+        console.log(response);
+        setAppData(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getApplicationNameAndLogo();
+  }, []);
+  const { state: { type, userData, } } = useLocation()
+  console.log({ userData, appData })
 
   return (
     <div className="content">
@@ -22,7 +42,7 @@ const Success = () => {
                   <b>Done!</b>
                 </p>
 
-                {type === "Login" ? (
+                {type && type === "Login" ? (
                   <>
                     <p className="text-center">
                       You are successfully Logged in with Passwordless
@@ -38,6 +58,15 @@ const Success = () => {
                           Home
                         </a>
                       </div>
+                     {appData?.isSonicKYCEnabled && <div className="col-6 form-group text-center">
+                        <button
+                        onClick={e=>navigate("/sonic",{state: {userId: userData?.userId, appData }} )}
+                          className="btn btn-lg btn-primary rounded-0 py-2 px-4"
+                          style={{ color: "fff" }}
+                        >
+                          SonicKYC
+                        </button>
+                      </div>}
                     </div>
                   </>
                 ) : (

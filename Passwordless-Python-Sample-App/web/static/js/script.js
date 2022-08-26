@@ -1,4 +1,4 @@
-Passwordless.init("https://api.passwordless4u.com/v1", "CLIENT_ID");
+Passwordless.init("https://api.passwordless4u.com/v1", "ofVfckfEyzm1JBndryTb1v-Ta-SN3XjvR5sKdb1DcgDul5CHGM");
 const getAppDetails = async () => {
   const logoImage = document.getElementById("logo");
   console.log(logoImage);
