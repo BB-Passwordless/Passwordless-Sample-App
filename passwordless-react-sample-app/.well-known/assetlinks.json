@@ -1,0 +1,32 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bluebricks.passwordless",
+      "sha256_cert_fingerprints": [
+        "E9:B5:61:8F:48:C8:62:4A:CC:70:C4:1F:B8:FA:E0:40:F0:68:68:D9:AF:F5:18:FC:6B:93:C8:53:5C:FB:0E:16"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bluebricks.passwordless",
+      "sha256_cert_fingerprints": [
+        "3F:86:96:35:7B:62:A5:64:ED:3A:22:BA:8E:51:05:48:4D:77:11:2B:97:31:98:18:10:05:33:C1:54:10:C9:49"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bluebricks.passwordlessclient",
+      "sha256_cert_fingerprints": [
+        "9B:DD:1F:4F:CB:A8:28:53:D1:02:E2:5E:C3:65:64:58:F3:57:89:4E:65:E2:40:AA:8A:29:B7:DF:53:FF:E9:8D"
+      ]
+    }
+  }
+]
