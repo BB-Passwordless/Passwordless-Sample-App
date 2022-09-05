@@ -7,4 +7,4 @@ app.use('/.well-known', express.static('.well-known'), serveIndex('.well-known')
   app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
-app.listen(3013,() =>{console.log("Sonic Sample App Running on 3013")})
+app.listen(8086,() =>{console.log("Sonic Sample App Running on 8086")})
