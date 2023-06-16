@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Home type="Login" />} />
         <Route path="/sonic" element={<Sonic  />} />
         <Route path="/register" element={<Home type="Register" />} />
-        <Route path="/authToken/:accessToken" element={<Details />} />
+        <Route path="/approve/:accessToken" element={<Details />} />
       </Routes>
     </Router>
   );

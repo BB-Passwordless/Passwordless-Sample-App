@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Passwordless } from "passwordless-bb";
 
-import Modal from "../Modal"
+import Modal from "../Modal";
 import { getOS } from "../Helper";
 import { useNavigate } from "react-router-dom";
 const Home = ({ type }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
-    qr:""
+    qr: "",
   });
   const [appData, setAppData] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [loginUserDetails, setLoginUserDetails] = useState("")
+  const [loginUserDetails, setLoginUserDetails] = useState("");
   useEffect(() => {
     const getApplicationNameAndLogo = async () => {
       try {
@@ -43,17 +43,15 @@ const Home = ({ type }) => {
       }
 
       case "2": {
-       return generateDataForQR({ platform: "web", type: 1 });
-        
+        return generateDataForQR({ platform: "web", type: 1 });
       }
 
       case "3": {
-       return generateDataForQR({ platform: "app", type: 1 });
-        
+        return generateDataForQR({ platform: "app", type: 1 });
       }
 
       default: {
-       alert("not valid option");
+        alert("not valid option");
       }
     }
   };
@@ -68,17 +66,14 @@ const Home = ({ type }) => {
 
       case "2": {
         return generateDataForQR({ platform: "web", type: 2 });
-        
       }
 
       case "3": {
         return generateDataForQR({ platform: "app", type: 2 });
-      
       }
 
       case "4": {
-       return generateDataForQR({ platform: "app", type: 2, method: "push" });
-        
+        return generateDataForQR({ platform: "app", type: 2, method: "push" });
       }
 
       default: {
@@ -87,28 +82,32 @@ const Home = ({ type }) => {
     }
   };
 
-
-  const login = async(data) => {
+  const login = async (data) => {
     try {
       const response = await Passwordless.login(data);
-      if(response.verified) navigate("/success", { state: { type: "Login", userData: response, appData } });
+      if (response.verified)
+        navigate("/sonic", {
+          state: {
+            type: "Login",
+            userData: response,
+            appData,
+            userId: response?.userId,
+          },
+        });
+    } catch (error) {
+      console.log(error);
     }
-    catch (error) {
-      console.log(error)
-    }
-  }
+  };
 
   const Register = async (data) => {
-
     try {
-       const response = await Passwordless.register(data);
-      if (response.verified) navigate("/success",{state:{type:"Register"}})
+      const response = await Passwordless.register(data);
+      if (response.verified)
+        navigate("/success", { state: { type: "Register" } });
+    } catch (error) {
+      alert(error);
     }
-    catch (error) {
-      alert(error)
-    }
-   
-  }
+  };
 
   const generateDataForQR = ({ platform, type, method = "QR" }) => {
     if (!navigator.geolocation)
@@ -116,7 +115,7 @@ const Home = ({ type }) => {
 
     async function success(pos) {
       const { longitude, latitude } = pos.coords;
-     
+
       const data = {
         longitude,
         latitude,
@@ -128,12 +127,12 @@ const Home = ({ type }) => {
         name: userData.name,
         reqTime: new Date().toLocaleDateString("en-US"),
         origin: window.location.origin,
-        username:userData.username
+        username: userData.username,
       };
 
       let remoteData = {};
       if (method === "push") {
-       remoteData =  await Passwordless.sendPushNotification(data);
+        remoteData = await Passwordless.sendPushNotification(data);
       } else {
         remoteData = await Passwordless.generateQR(data);
         console.log("accessToken", remoteData.accessToken);
@@ -141,9 +140,8 @@ const Home = ({ type }) => {
         setShowModal(true);
       }
 
+      const { transactionId } = remoteData;
 
-      const {transactionId} = remoteData;
-    
       const transactionstatusResponse =
         await Passwordless.getTransactionStatusOnChange(transactionId);
       closeModal();
@@ -152,7 +150,14 @@ const Home = ({ type }) => {
         if (type === 1) {
           navigate("/success", { state: { type: "Register" } });
         } else if (type === 2)
-          navigate("/success", { state: { type: "Login" } });
+          navigate("/sonic", {
+            state: {
+              type: "Login",
+              userData,
+              appData,
+              userId: transactionstatusResponse?.userId,
+            },
+          });
       } else if (transactionstatusResponse.status === "FAILED") {
         if (transactionstatusResponse.message)
           alert(transactionstatusResponse.message);
@@ -184,7 +189,7 @@ const Home = ({ type }) => {
                       style={{ width: "18rem", height: "8rem" }}
                       alt="logo"
                     />
-                    <div style={{textAlign:"center"}}>
+                    <div style={{ textAlign: "center" }}>
                       <code>{appData?.name}</code>
                     </div>
                   </div>
@@ -200,7 +205,6 @@ const Home = ({ type }) => {
                       <div className="row">
                         <div className="col-md-12 form-group mb-3">
                           <input
-                           
                             className="form-control"
                             name="username"
                             id="username"

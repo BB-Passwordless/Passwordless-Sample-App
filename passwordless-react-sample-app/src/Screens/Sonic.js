@@ -7,8 +7,9 @@ export default function SonicPage() {
   const appId = process.env.REACT_APP_CLIENT_ID;
   const [qrCodeImage, setQrCodeImage] = useState("");
   const [error, setError] = useState("")
-  const { state: {userId, appData } } = useLocation()
-
+  const { state } = useLocation()
+  console.log({state});
+  const {userId, appData } = state
   useEffect(() => {
     if (typeof userId == "string") {
       generateQRCode();
