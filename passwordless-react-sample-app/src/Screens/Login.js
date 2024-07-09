@@ -128,10 +128,12 @@ const Home = ({ type }) => {
         reqTime: new Date().toLocaleDateString("en-US"),
         origin: window.location.origin,
         username: userData.username,
+        clientId: process.env.REACT_APP_CLIENT_ID
       };
 
       let remoteData = {};
       if (method === "push") {
+        console.log({data});
         remoteData = await Passwordless.sendPushNotification(data);
       } else {
         remoteData = await Passwordless.generateQR(data);
