@@ -22,6 +22,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:src="@drawable/logo"
+                android:id="@+id/ivLogo"
                 android:layout_height="100dp"/>
 
             <TextView
@@ -29,6 +30,8 @@
                 android:textSize="22sp"
                 android:text="Passwordless Register"
                 android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:id="@+id/tvAppNAme"
                 android:textStyle="bold"
                 android:textColor="#162E4D"
                 android:layout_height="wrap_content"/>

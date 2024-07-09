@@ -22,12 +22,15 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:src="@drawable/logo"
+                android:id="@+id/ivLogo"
                 android:layout_height="100dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:textSize="22sp"
                 android:text="Passwordless Login"
+                android:layout_marginTop="20dp"
+                android:id="@+id/tvAppNAme"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="#162E4D"

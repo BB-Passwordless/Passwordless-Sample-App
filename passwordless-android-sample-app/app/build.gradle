@@ -9,10 +9,14 @@ android {
     signingConfigs {
         config {
             keyAlias 'key0'
-            keyPassword 'blue3800'
-            storeFile file('keystore.jks')
-            storePassword 'blue3800'
+            keyPassword 'pass1234'
+            storeFile file('keystore1.jks')
+            storePassword 'pass1234'
         }
+
+        // keytool -list -v -alias key0 -keystore "/Users/sumit/Desktop/android/passwordless/PasswordlessClient/app/keystore1.jks"
+        // sha256 - 2E:3C:C1:B0:50:25:2A:69:E4:92:AF:B4:A2:76:41:74:F5:A8:EC:36:46:96:BF:59:C0:6A:03:13:53:E5:4C:46
+        //sha1 - 34:EC:45:02:EC:60:44:0B:38:6F:D6:C2:2B:66:40:67:71:3C:6E:E9
     }
 
     defaultConfig {
@@ -43,11 +47,13 @@ android {
 
 dependencies {
 
-
     // gif
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    //picaso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     //passwordless
+   // implementation files('libs/some-dependency.jar')
 
     implementation(name:'PasswordlessClient_-release', ext:'aar'){
         dependencies {

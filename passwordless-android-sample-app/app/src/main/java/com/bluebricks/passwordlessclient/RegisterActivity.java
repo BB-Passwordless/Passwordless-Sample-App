@@ -1,5 +1,6 @@
 package com.bluebricks.passwordlessclient;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -8,16 +9,24 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluebricks.passwordlessclient_.Connector;
 import com.bluebricks.passwordlessclient_.PasswordlessResponse;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
@@ -30,6 +39,11 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etUsername;
     LinearLayout llChange;
     Connector connector;
+
+    ImageView ivLogo;
+    TextView tvAppName;
+
+    boolean isSdkLoaded;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +56,22 @@ public class RegisterActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         llChange = findViewById(R.id.llChange);
 
+
+        ivLogo = findViewById(R.id.ivLogo);
+        tvAppName = findViewById(R.id.tvAppNAme);
+
+
         connector = new Connector(this);
 
-        try {
-            connector.init("home.passwordless.com.au",
-                    "https://home.passwordless.com.au",
-                    "tURHTLmcYMPYYhHGuBqUCRFa0NJjuXQqkEgOXNomsQRS-wxsQ-");
+        try
+        {
+
+            isSdkLoaded = connector.init("https://api.passwordless4u.com",
+                    "https://api.passwordless4u.com/v1",
+                    "api.passwordless4u.com",
+                    "3G07EdrKB6cACrrkHLJdMqR0y7_XMidCgWFzjY1TdJQKoePg_A"
+            );
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,8 +92,8 @@ public class RegisterActivity extends AppCompatActivity {
                         {
                             if(resultCode==0)
                             {
-                                startActivity(new Intent(RegisterActivity.this,SuccessActivity.class));
-                                finish();
+                                startActivity(new Intent(RegisterActivity.this,SuccessActivity.class).putExtra("from","R"));
+                                //finish();
                             }
                             else
                             {
@@ -89,6 +113,50 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        try{
+            connector.getApplicationDetails(new PasswordlessResponse() {
+                @Override
+                public void response(int resultCode, String resultMessage, JSONObject resultData) {
+                    if(resultCode==0)
+                    {
+                        String imageUrl="";
+                        String appName="";
+
+                        try {
+                            imageUrl= resultData.getString("logo");
+                            appName= resultData.getString("name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            String ss= imageUrl.substring(imageUrl.indexOf(",")+1);
+                            byte[] decodedString = Base64.decode(ss, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0,decodedString.length);
+                            ivLogo.setImageBitmap(decodedByte);
+                        }
+                        catch (Exception e){
+                            Picasso.with(getApplicationContext()).load(imageUrl)
+                                    .placeholder(R.drawable.logo)
+                                    .error(R.drawable.logo)
+                                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                                    .into(ivLogo);
+                        };
+
+                        if(appName!=null)
+                            tvAppName.setText(appName+" Register");
+                    }
+                    else
+                    {
+                        popup(resultMessage);
+                    }
+                }
+            });
+        }catch (Exception e){
+
+        }
     }
 
 
